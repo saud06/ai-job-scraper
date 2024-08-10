@@ -1,0 +1,19 @@
+# render.yaml - deployment config for Render
+services:
+  - type: web
+    name: ai-job-scraper
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 2 -b 0.0.0.0:$PORT app:app
+    envVars:
+      - key: MONGO_URI
+        value: "mongodb+srv://saud:qjInaLUCp0rXbrCz@cluster0.8hmnx1o.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+      - key: DB_NAME
+        value: "ai_job_scraper"
+      - key: OPENAI_API_KEY
+        value: ""
+      - key: FLASK_ENV
+        value: "production"
+      - key: PORT
+        value: "8000"

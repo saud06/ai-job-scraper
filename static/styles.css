@@ -1,0 +1,4 @@
+body { background: #f6f7fb; }
+.card { border-radius: 1rem; }
+.badge { margin-right: .25rem; }
+.job-description { white-space: pre-line; }

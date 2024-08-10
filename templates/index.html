@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Jobs</h1>
+  <form action="{{ url_for('refresh') }}" method="post">
+    <button class="btn btn-primary">Refresh Jobs</button>
+  </form>
+</div>
+
+<form class="row g-3 mb-3" method="get" action="{{ url_for('index') }}">
+  <div class="col-md-4">
+    <label class="form-label">Role</label>
+    <select class="form-select" name="role">
+      <option value="">All</option>
+      {% for r in roles %}
+      <option value="{{r}}" {% if role==r %}selected{% endif %}>{{r}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Skill</label>
+    <select class="form-select" name="skill">
+      <option value="">All</option>
+      {% for s in skills %}
+      <option value="{{s}}" {% if skill==s %}selected{% endif %}>{{s}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4 d-flex align-items-end">
+    <button class="btn btn-outline-secondary me-2" type="submit">Apply Filters</button>
+    <a class="btn btn-outline-dark" href="{{ url_for('index') }}">Reset</a>
+  </div>
+</form>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h2 class="h5">Skill Distribution</h2>
+    <canvas id="skillsChart"></canvas>
+  </div>
+</div>
+
+<div class="list-group">
+  {% for j in jobs %}
+  <a class="list-group-item list-group-item-action" href="{{ url_for('job_detail', source=j.source, source_id=j.source_id) }}">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ j.title or "Untitled" }}</h5>
+      <small>{{ j.published_at or "n/a" }}</small>
+    </div>
+    <p class="mb-1">{{ j.company or "Unknown" }} — {{ j.location or "N/A" }}</p>
+    <div>
+      <span class="badge bg-primary">{{ j.ai_class or "Other" }}</span>
+      {% for t in j.tags or [] %}
+        <span class="badge bg-secondary">{{ t }}</span>
+      {% endfor %}
+      {% if j.remote %}<span class="badge bg-success">Remote</span>{% endif %}
+    </div>
+  </a>
+  {% else %}
+  <div class="alert alert-info">No jobs yet. Click "Refresh Jobs" to ingest.</div>
+  {% endfor %}
+</div>
+{% endblock %}
