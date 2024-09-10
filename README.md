@@ -1,140 +1,118 @@
-# ai-job-scraper
+````markdown
+# 🛠️ AI Job Scraper — Intelligent Job Aggregator & Classifier
 
-**AI-Based Job Scraper & Dashboard (Flask + MongoDB + AI classification)**
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Flask](https://img.shields.io/badge/Flask-API%20Backend-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-orange)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT%20Classifier-purple)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
-A portfolio-ready project that ingests public job posts from open APIs (no HTML scraping), classifies them with an optional AI provider (OpenAI), tags skills, and displays results in a clean dashboard.
-
-- **Stack:** Python (Flask), MongoDB (Atlas or local), Requests
-- **AI:** OpenAI (Claude). If no API key is provided, a rule-based fallback is used.
-- **Deploy:** Render (free tier) or Docker
-- **Live Demo (self-hosted):** Deploy to Render and add your URL here
-
-> Sources used are **public JSON APIs**:
-> - Arbeitnow Job Board API (EU): https://www.arbeitnow.com/api/job-board-api
-> - RemoteOK API (global): https://remoteok.com/api
-
-> Always check and comply with each provider's Terms of Service before large-scale use.
+> **An intelligent job scraping and classification tool** that aggregates postings from multiple APIs, stores them in MongoDB, and classifies roles using both **rule-based logic** and **AI (OpenAI GPT)** — perfect for quickly identifying relevant opportunities.
 
 ---
 
-## Features
-- Fetch jobs from public APIs
-- Store normalized data in MongoDB
-- AI classification of role types (Backend, Frontend, Full-Stack, Data/ML, DevOps, Other)
-- Skill extraction (Python, JS/TS, React, Node, Docker, SQL, NoSQL, etc.)
-- Web dashboard with filters + charts
-- One-click refresh to re-ingest latest jobs
+## 🚀 Features
+
+- **Multi-Source Scraping** — Fetches jobs from:
+  - [Arbeitnow](https://arbeitnow.com/api/job-board-api)
+  - [RemoteOK](https://remoteok.com/api)
+- **Dual Classification**:
+  - **Rule-based** (fast, offline, no cost)
+  - **OpenAI GPT-powered** (accurate, nuanced)
+- **MongoDB Storage** — Persistent job storage with indexed queries
+- **/refresh Endpoint** — Instantly update and classify job listings
+- **Dashboard Ready** — Optional UI for real-time visualization
 
 ---
 
-## Quickstart (Local)
+## 🧩 Tech Stack
 
-1) **Create and activate a virtual environment**
+| Layer            | Technology                 |
+|------------------|---------------------------|
+| Backend API      | Flask (Python)            |
+| Database         | MongoDB                   |
+| AI Classifier    | OpenAI GPT-4 (optional)   |
+| Scraping Sources | Arbeitnow, RemoteOK       |
+| Deployment       | Render / Railway / Heroku |
+
+---
+
+## 📦 Installation
+
 ```bash
+git clone https://github.com/saud06/ai-job-scraper.git
+cd ai-job-scraper
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-```
-
-2) **Install dependencies**
-```bash
 pip install -r requirements.txt
+````
+
+Set up your `.env`:
+
+```env
+MONGO_URI=mongodb+srv://...
+OPENAI_API_KEY=sk-...   # Optional if using AI classification
 ```
 
-3) **Copy env and set variables**
+---
+
+## 🖥️ Usage
+
+### Refresh Jobs
+
 ```bash
-cp .env.example .env
-# Edit .env to set MONGO_URI (Atlas or local), DB_NAME, and optionally AI keys
+curl -X GET http://localhost:5000/refresh
 ```
 
-4) **Run the app**
-```bash
-python app.py
-# Visit http://127.0.0.1:8000
-```
+### Example Response
 
-If `MONGO_URI` is not set, the app will fall back to an in-memory mocked MongoDB (via `mongomock`) so you can run immediately.
-
----
-
-## Deploy to Render
-
-1) **Create a new Web Service** on Render and connect your GitHub repo.
-2) Set **Build Command**: `pip install -r requirements.txt`
-3) Set **Start Command**: `gunicorn -w 2 -b 0.0.0.0:$PORT app:app`
-4) Set **Environment** (Render Dashboard → Environment):
-   - `PYTHON_VERSION=3.11`
-   - `FLASK_ENV=production`
-   - `PORT=10000` (Render will inject PORT, but having this variable set is fine)
-   - `MONGO_URI=...` (MongoDB Atlas connection string)
-   - `DB_NAME=ai_job_scraper`
-   - Optional: `OPENAI_API_KEY=...`
-5) **Deploy.**
-
-Alternatively, use the provided `render.yaml` for Infrastructure as Code (Blueprints).
-
----
-
-## Project Structure
-```
-ai-job-scraper/
-├── app.py
-├── db.py
-├── scraper/
-│   ├── __init__.py
-│   ├── job_sources.py
-│   └── ai_classifier.py
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   └── job_detail.html
-├── static/
-│   ├── styles.css
-│   └── app.js
-├── requirements.txt
-├── Procfile
-├── render.yaml
-├── Dockerfile
-├── .env.example
-├── LICENSE
-└── README.md
-```
-
----
-
-## Environment Variables
-- `FLASK_ENV` (default: `development`)
-- `PORT` (default: `8000`)
-- `MONGO_URI` (e.g., Atlas connection string; if missing, uses in-memory DB via mongomock)
-- `DB_NAME` (default: `ai_job_scraper`)
-- `OPENAI_API_KEY` (optional)
-
----
-
-## Data Model
-Jobs are stored as documents like:
 ```json
 {
-  "_id": "...",
-  "source": "arbeitnow",
-  "source_id": "12345",
-  "title": "Data Scientist",
-  "company": "Acme GmbH",
-  "location": "Berlin, Germany",
-  "remote": true,
-  "url": "https://...",
-  "description": "...",
-  "published_at": "2025-08-01T10:00:00Z",
-  "tags": ["Python", "ML", "Docker"],
-  "ai_class": "Data/ML",
-  "ai_reasoning": "Likely Data/ML due to keywords ...",
-  "ingested_at": "2025-08-15T00:00:00Z"
+  "arbeitnow_jobs": 50,
+  "remoteok_jobs": 50,
+  "classified_jobs": 100
 }
 ```
 
 ---
 
-## Notes
-- Keep API calls reasonable. Cache results in MongoDB.
-- Extend `scraper/job_sources.py` to add more providers.
-- Swap the AI backend in `scraper/ai_classifier.py` as you prefer.
-- For a stronger portfolio, add small tests and GitHub Actions CI later.
+## 📊 Example Dashboard
+
+If UI is enabled:
+![Dashboard Screenshot](docs/dashboard.png)
+
+---
+
+## 🧠 How Classification Works
+
+1. **Rule-Based** — Checks keywords in title & description
+2. **AI-Based** — Sends job details to OpenAI GPT for nuanced role detection
+3. Stores the predicted `role` & `key_skills` in MongoDB
+
+---
+
+## 🌍 Live Demo
+
+🔗 [Live Deployment](https://ai-job-scraper-0not.onrender.com)
+*(Deployed on Render — cold starts may take a few seconds)*
+
+---
+
+## 💡 Why I Built This
+
+> As a Master's student in Web & Data Science with 2.5+ years in software development, I wanted to create a project that blends **data engineering, AI, and web development** into something directly useful — like finding relevant jobs fast.
+
+---
+
+## 📬 Contact
+
+* **GitHub**: [saud06](https://github.com/saud06)
+* **LinkedIn**: [Saud M.](https://linkedin.com/in/saud06)
+* **Email**: [saud.mn6@gmail.com](mailto:saud.mn6@gmail.com)
+
+---
+
+### ⭐ If you like this project, give it a star — it helps me get noticed by recruiters!
+
+```
+```
