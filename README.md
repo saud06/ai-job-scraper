@@ -1,4 +1,3 @@
-````markdown
 # 🛠️ AI Job Scraper — Intelligent Job Aggregator & Classifier
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
@@ -45,13 +44,6 @@ cd ai-job-scraper
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-````
-
-Set up your `.env`:
-
-```env
-MONGO_URI=mongodb+srv://...
-OPENAI_API_KEY=sk-...   # Optional if using AI classification
 ```
 
 ---
