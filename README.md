@@ -101,10 +101,3 @@ If UI is enabled:
 * **GitHub**: [saud06](https://github.com/saud06)
 * **LinkedIn**: [Saud M.](https://linkedin.com/in/saud06)
 * **Email**: [saud.mn6@gmail.com](mailto:saud.mn6@gmail.com)
-
----
-
-### ⭐ If you like this project, give it a star — it helps me get noticed by recruiters!
-
-```
-```
